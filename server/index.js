@@ -1,5 +1,8 @@
+console.log('1. Starting...');
 import 'dotenv/config';
+console.log('2. dotenv loaded');
 import express from 'express';
+console.log('3. express loaded');
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -10,9 +13,7 @@ import roomRoutes from './routes/rooms.js';
 import playerRoutes from './routes/players.js';
 import { setupSocket } from './socket.js';
 
-console.log('Starting server...');
-console.log('PORT:', process.env.PORT);
-console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+console.log('4. All imports done');
 
 const app = express();
 const httpServer = createServer(app);
