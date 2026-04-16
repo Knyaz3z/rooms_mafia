@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://roomsmafia-production.up.railway.app/api/$1" },
+    { "source": "/socket.io/:path*", "destination": "https://roomsmafia-production.up.railway.app/socket.io/:path*" },
     { "source": "/room/:path*", "destination": "/index.html" }
   ]
 }

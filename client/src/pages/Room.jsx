@@ -33,9 +33,11 @@ export default function Room() {
     fetchRoom()
   }, [code])
 
+  const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'https://roomsmafia-production.up.railway.app'
+
   useEffect(() => {
     if (joined || isHost) {
-      const newSocket = io(window.location.origin, {
+      const newSocket = io(SOCKET_URL, {
         transports: ['websocket', 'polling']
       })
       
