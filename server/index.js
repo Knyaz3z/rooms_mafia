@@ -10,6 +10,10 @@ import roomRoutes from './routes/rooms.js';
 import playerRoutes from './routes/players.js';
 import { setupSocket } from './socket.js';
 
+console.log('Starting server...');
+console.log('PORT:', process.env.PORT);
+console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
+
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -17,6 +21,7 @@ const io = new Server(httpServer, {
 });
 
 export const prisma = new PrismaClient();
+console.log('Prisma connected');
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -33,7 +38,7 @@ setupSocket(io);
 
 const PORT = process.env.PORT || 3001;
 
-httpServer.listen(PORT, () => {
+httpServer.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 
