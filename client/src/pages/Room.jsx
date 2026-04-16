@@ -28,6 +28,8 @@ export default function Room() {
   const [round, setRound] = useState(1)
   
   const [socket, setSocket] = useState(null)
+  const [myPlayerId, setMyPlayerId] = useState(null)
+  const [myName, setMyName] = useState('')
 
   useEffect(() => {
     fetchRoom()
@@ -110,6 +112,9 @@ export default function Room() {
         throw new Error(data.error)
       }
 
+      const data = await res.json()
+      setMyPlayerId(data.id)
+      setMyName(data.name)
       setJoined(true)
     } catch (err) {
       setError(err.message)
@@ -281,12 +286,27 @@ export default function Room() {
 
       <h3 style={{ marginBottom: 16 }}>Рейтинг игроков</h3>
 
+      {!isHost && joined && players.find(p => p.id === myPlayerId) && (
+        <div className="card" style={{ marginBottom: 24, border: '2px solid var(--accent)', background: 'var(--bg-card)' }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ color: 'var(--text-secondary)', fontSize: 14 }}>Мои баллы</div>
+            <div style={{ fontSize: 32, fontWeight: 'bold', color: 'var(--accent)' }}>
+              {players.find(p => p.id === myPlayerId)?.score || 0} pts
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="players-list">
         {players.map((player, index) => (
-          <div key={player.id} className="player-item">
+          <div 
+            key={player.id} 
+            className="player-item"
+            style={player.id === myPlayerId ? { border: '2px solid var(--accent)', background: 'var(--bg-card)' } : {}}
+          >
             <span className={`rank rank-${index + 1}`}>{index + 1}</span>
             <span className="avatar">{player.avatar}</span>
-            <span className="name">{player.name}</span>
+            <span className="name">{player.name}{player.id === myPlayerId && ' (вы)'}</span>
             <span className="score">{player.score} pts</span>
             {isHost && (
               <button onClick={() => deletePlayer(player.id)} className="btn btn-danger" style={{ padding: '8px 12px' }}>
