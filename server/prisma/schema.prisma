@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  HOST
+  ADMIN
+}
+
+enum RoomStatus {
+  WAITING
+  IN_PROGRESS
+  FINISHED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(HOST)
+  createdAt DateTime @default(now())
+
+  rooms Room[]
+}
+
+model Room {
+  id        String     @id @default(uuid())
+  hostId    String
+  host      User       @relation(fields: [hostId], references: [id])
+  name      String
+  gameDate  DateTime
+  code      String     @unique
+  status    RoomStatus @default(WAITING)
+  createdAt DateTime   @default(now())
+
+  players      Player[]
+  gameHistory  GameHistory[]
+}
+
+model Player {
+  id       String   @id @default(uuid())
+  roomId   String
+  room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  name     String
+  avatar   String
+  score    Int      @default(0)
+  joinedAt DateTime @default(now())
+
+  gameHistory GameHistory[]
+}
+
+model GameHistory {
+  id        String   @id @default(uuid())
+  roomId    String
+  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  playerId  String
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  score     Int
+  round     Int
+  createdAt DateTime @default(now())
+}
